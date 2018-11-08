@@ -1,4 +1,4 @@
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Support.V4.Media.Session;
@@ -27,9 +27,7 @@ namespace Plugin.MediaManager.ExoPlayer
 
     [Service]
     [IntentFilter(new[] { ActionPlay, ActionPause, ActionStop, ActionTogglePlayback, ActionNext, ActionPrevious })]
-    public class ExoPlayerAudioService : MediaServiceBase,
-        IExoPlayerEventListener,
-        TrackSelector.IEventListener, ExtractorMediaSource.IEventListener
+    public class ExoPlayerAudioService : MediaServiceBase, IPlayerEventListener, /*IMediaSourceEventListener*/ ExtractorMediaSource.IEventListener
     {
         private SimpleExoPlayer _mediaPlayer;
 
@@ -75,13 +73,13 @@ namespace Plugin.MediaManager.ExoPlayer
 
         public override void InitializePlayer()
         {
-            var mainHandler = new Handler();
-            var trackSelector = new DefaultTrackSelector(mainHandler);
-            trackSelector.AddListener(this);
+            var trackSelector = new DefaultTrackSelector();
+            //trackSelector.AddListener(this);
             var loadControl = new DefaultLoadControl();
             if (_mediaPlayer == null)
             {
-                _mediaPlayer = ExoPlayerFactory.NewSimpleInstance(ApplicationContext, trackSelector, loadControl);
+                _mediaPlayer = ExoPlayerFactory.NewSimpleInstance(ApplicationContext, new DefaultRenderersFactory(this), trackSelector, loadControl);
+                //_mediaPlayer = ExoPlayerFactory.NewSimpleInstance(ApplicationContext, trackSelector, loadControl);
                 _mediaPlayer.AddListener(this);
             }
 
@@ -178,7 +176,7 @@ namespace Plugin.MediaManager.ExoPlayer
             Console.WriteLine("OnTimelineChanged");
         }
 
-        public void OnTrackSelectionsChanged(TrackSelections p0)
+        public void OnTrackSelectionsChanged(ITrackSelection p0)
         {
             Console.WriteLine("TrackSelectionChanged");
         }
@@ -282,7 +280,7 @@ namespace Plugin.MediaManager.ExoPlayer
         private IDataSourceFactory GetHttpFactory()
         {
             var bandwithMeter = new DefaultBandwidthMeter();
-            var httpFactory = new DefaultHttpDataSourceFactory(ExoPlayerUtil.GetUserAgent(this, ApplicationInfo.Name), bandwithMeter);
+            var httpFactory = new DefaultHttpDataSourceFactory(Util.GetUserAgent(this, ApplicationInfo.Name), bandwithMeter);
             return new HttpSourceFactory(httpFactory, RequestHeaders);
         }
 
