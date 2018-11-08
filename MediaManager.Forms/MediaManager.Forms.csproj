@@ -16,7 +16,7 @@
     <Compile Remove="Resources\*.cs" />
     <None Include="..\readme.txt" pack="true" PackagePath="." />
     <ProjectReference Include="..\MediaManager\MediaManager.csproj" />
-    <PackageReference Include="Xamarin.Forms" Version="2.5.1.444934" />
+    <PackageReference Include="Xamarin.Forms" Version="3.3.0.967583" />
   </ItemGroup>
 
   <ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard')) ">

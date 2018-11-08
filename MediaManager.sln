@@ -15,13 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaManager.Uwp.Tests", "M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaManager", "MediaManager\MediaManager.csproj", "{57484D07-A3D9-4E99-8D97-688BFCE137D1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{578FA301-8828-47CE-A4E8-2FA05254F04C}"
-	ProjectSection(SolutionItems) = preProject
-		build.cake = build.cake
-		Directory.build.props = Directory.build.props
-		Directory.build.targets = Directory.build.targets
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaManager.Tests", "MediaManager.Tests\MediaManager.Tests.csproj", "{1215B0AA-99BB-45DF-A7B9-BE6260C2EED3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaManager.Forms", "MediaManager.Forms\MediaManager.Forms.csproj", "{4430A8BA-C7DF-4A5F-875E-D5121AA15B52}"

@@ -9,11 +9,17 @@
         <Summary>Summary of nuget</Summary>
         <Description>Plugin Description</Description>
     </PropertyGroup>
-	
-	<ItemGroup>
+
+  <ItemGroup>
+    <None Include="Resources\*.cs" />
+    <Compile Remove="Resources\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MediaManager\MediaManager.csproj" />
-		<PackageReference Include="Xam.Plugins.Android.ExoPlayer" version="2.0.4" />
-		<PackageReference Include="Xamarin.Build.Download" Version="0.4.9" />
+		<PackageReference Include="Xam.Plugins.Android.ExoPlayer" version="2.9.0" />
+		<PackageReference Include="Xamarin.Build.Download" Version="0.4.11" />
+    <PackageReference Update="Microsoft.CSharp" Version="4.5.0" />
 	</ItemGroup>
 	
     <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
