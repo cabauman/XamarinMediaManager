@@ -4,7 +4,9 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>MediaManager.Reactive</AssemblyName>
     <RootNamespace>MediaManager.Reactive</RootNamespace>
-	<PackageId>Plugin.MediaManager.Reactive</PackageId>
+	<PackageId>MediaManager.Unofficial.Reactive</PackageId>
+	<PackageReleaseNotes>Update packages and support netstandard2.0</PackageReleaseNotes>
+	<Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>

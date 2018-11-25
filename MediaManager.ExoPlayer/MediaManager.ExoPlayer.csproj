@@ -4,10 +4,12 @@
         <TargetFrameworks>MonoAndroid81</TargetFrameworks>
         <AssemblyName>MediaManager.ExoPlayer</AssemblyName>
         <RootNamespace>MediaManager.ExoPlayer</RootNamespace>
-        <PackageId>Plugin.MediaManager.ExoPlayer</PackageId>
+        <PackageId>MediaManager.Unofficial.ExoPlayer</PackageId>
         <Title>MediaManager.ExoPlayer Plugin for Xamarin and Windows</Title>
         <Summary>Summary of nuget</Summary>
-        <Description>Plugin Description</Description>
+        <Description></Description>
+        <Version>1.0.2</Version>
+        <PackageReleaseNotes>Update packages and support netstandard2.0</PackageReleaseNotes>
     </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MediaManager\MediaManager.csproj" />
-		<PackageReference Include="Xam.Plugins.Android.ExoPlayer" version="2.9.0" />
+		<PackageReference Include="Xam.Plugins.Android.ExoPlayer" version="2.8.8" />
 		<PackageReference Include="Xamarin.Build.Download" Version="0.4.11" />
     <PackageReference Update="Microsoft.CSharp" Version="4.5.0" />
 	</ItemGroup>

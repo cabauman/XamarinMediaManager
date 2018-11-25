@@ -27,7 +27,7 @@ namespace Plugin.MediaManager.ExoPlayer
 
     [Service]
     [IntentFilter(new[] { ActionPlay, ActionPause, ActionStop, ActionTogglePlayback, ActionNext, ActionPrevious })]
-    public class ExoPlayerAudioService : MediaServiceBase, IPlayerEventListener, /*IMediaSourceEventListener*/ ExtractorMediaSource.IEventListener
+    public class ExoPlayerAudioService : MediaServiceBase, IPlayerEventListener, ExtractorMediaSource.IEventListener
     {
         private SimpleExoPlayer _mediaPlayer;
 
@@ -41,11 +41,11 @@ namespace Plugin.MediaManager.ExoPlayer
             {
                 double parsedPosition;
                 var position = _mediaPlayer?.CurrentPosition;
-                if (position > 0 && Double.TryParse(position.ToString(), out parsedPosition)) 
+                if (position > 0 && Double.TryParse(position.ToString(), out parsedPosition))
                     return TimeSpan.FromMilliseconds(parsedPosition);
                 return TimeSpan.Zero;
             }
-        } 
+        }
 
         public override TimeSpan Duration
         {
@@ -71,16 +71,26 @@ namespace Plugin.MediaManager.ExoPlayer
             }
         }
 
+        private static readonly DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
+
         public override void InitializePlayer()
         {
-            var trackSelector = new DefaultTrackSelector();
-            //trackSelector.AddListener(this);
-            var loadControl = new DefaultLoadControl();
-            if (_mediaPlayer == null)
+            bool needNewPlayer = _mediaPlayer == null;
+            if (needNewPlayer)
             {
-                _mediaPlayer = ExoPlayerFactory.NewSimpleInstance(ApplicationContext, new DefaultRenderersFactory(this), trackSelector, loadControl);
-                //_mediaPlayer = ExoPlayerFactory.NewSimpleInstance(ApplicationContext, trackSelector, loadControl);
+                var adaptiveTrackSelectionFactory =
+                    new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
+                var trackSelector = new DefaultTrackSelector(adaptiveTrackSelectionFactory);
+                var eventLogger = new ExoPlayerEventLogger(trackSelector);
+
+                var renderersFactory = new DefaultRenderersFactory(ApplicationContext);
+                var loadControl = new DefaultLoadControl();
+
+                _mediaPlayer = ExoPlayerFactory.NewSimpleInstance(renderersFactory, trackSelector, loadControl);
+                _mediaPlayer.AddListener(eventLogger);
                 _mediaPlayer.AddListener(this);
+                _mediaPlayer.SetAudioDebugListener(eventLogger);
+                _mediaPlayer.SetMetadataOutput(eventLogger);
             }
 
             StatusChanged += (sender, args) => OnStatusChangedHandler(args);
@@ -166,21 +176,6 @@ namespace Plugin.MediaManager.ExoPlayer
             }
         }
 
-        public void OnPositionDiscontinuity()
-        {
-            Console.WriteLine("OnPositionDiscontinuity");
-        }
-
-        public void OnTimelineChanged(Timeline timeline, Object manifest)
-        {
-            Console.WriteLine("OnTimelineChanged");
-        }
-
-        public void OnTrackSelectionsChanged(ITrackSelection p0)
-        {
-            Console.WriteLine("TrackSelectionChanged");
-        }
-
         /* TODO: Implement IOutput Interface => https://github.com/martijn00/ExoPlayerXamarin/issues/38
          */
         //public void OnMetadata(Object obj)
@@ -259,12 +254,12 @@ namespace Plugin.MediaManager.ExoPlayer
 
         private void OnBuffering()
         {
-            if(_mediaPlayer == null || _mediaPlayer.BufferedPosition > TimeSpan.MaxValue.TotalMilliseconds - 100) return;
+            if (_mediaPlayer == null || _mediaPlayer.BufferedPosition > TimeSpan.MaxValue.TotalMilliseconds - 100) return;
 
-                OnBufferingChanged(
-                    new BufferingChangedEventArgs(
-                        _mediaPlayer.BufferedPercentage, 
-                        TimeSpan.FromMilliseconds(Convert.ToInt64(_mediaPlayer.BufferedPosition))));
+            OnBufferingChanged(
+                new BufferingChangedEventArgs(
+                    _mediaPlayer.BufferedPercentage,
+                    TimeSpan.FromMilliseconds(Convert.ToInt64(_mediaPlayer.BufferedPosition))));
         }
 
         private IMediaSource GetSource(string url)
@@ -286,12 +281,48 @@ namespace Plugin.MediaManager.ExoPlayer
 
         public override Task Play(IEnumerable<IMediaFile> mediaFiles)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Play: ");
+            return null;
         }
-        
+
         public void OnLoadError(IOException ex)
         {
             OnMediaFailed(new MediaFailedEventArgs(ex.ToString(), ex));
+        }
+
+        public void OnPlaybackParametersChanged(PlaybackParameters p0)
+        {
+            Console.WriteLine("OnPlaybackParametersChanged: " + p0);
+        }
+
+        public void OnPositionDiscontinuity(int p0)
+        {
+            Console.WriteLine("OnPositionDiscontinuity: " + p0);
+        }
+
+        public void OnRepeatModeChanged(int p0)
+        {
+            Console.WriteLine("OnRepeatModeChanged");
+        }
+
+        public void OnSeekProcessed()
+        {
+            Console.WriteLine("OnSeekProcessed");
+        }
+
+        public void OnShuffleModeEnabledChanged(bool p0)
+        {
+            Console.WriteLine("OnShuffleModeEnabledChanged");
+        }
+
+        public void OnTimelineChanged(Timeline p0, Object p1, int p2)
+        {
+            Console.WriteLine("OnTimelineChanged");
+        }
+
+        public void OnTracksChanged(TrackGroupArray p0, TrackSelectionArray p1)
+        {
+            Console.WriteLine("OnTracksChanged");
         }
     }
 
